@@ -1,0 +1,68 @@
+{% extends "layout.html" %} 
+
+{% block content %} 
+    
+    <h1> Stock List -- {{ request.query_params.filter }}</h1>
+
+    <form method = "get">
+        <select name="filter">
+            <option value = ""> All stocks</option>
+            <option value = "new_intraday_highs"> New Intraday Highs</option>
+            <option value = "new_closing_highs"> New Closing Highs</option>
+            <option value = "new_intraday_lows"> New Intraday Lows</option>
+            <option value = "new_closing_lows"> New Closing Lows</option>
+            <option value = "rsi_over_bought"> RSI Over Bought</option>
+            <option value = "rsi_over_sold"> RSI Over Sold</option>
+            <option value = "below_sma_20"> Below SMA 20</option>
+            <option value = "above_sma_20"> Above SMA 20</option>
+            <option value = "below_sma_50"> Below SMA 50</option>
+            <option value = "above_sma_50"> Above SMA 50</option>
+        </select>
+        <input type="submit" />
+    </form>
+
+    
+
+      <table class="ui selectable inverted table">
+        <thead>
+          <tr>
+            <th>Symbol</th>
+            <th>Company Name</th>
+            <th>Closing</th>
+            <th>RSI_14</th>
+            <th>SMA_20</th>
+            <th>SMA_50</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for stock in stocks %}
+          <tr>
+            <td>{{stock.symbol}}</td>
+            <td><a href="/stock/{{stock.symbol}}">{{stock.company}}</a></td>
+            {% if indicator_values[stock.symbol] %}
+              <td>{{ indicator_values[stock.symbol].close | round(2)}}</td>
+            
+              {% if indicator_values[stock.symbol].rsi_14 != 0 %}
+                <td>{{ indicator_values[stock.symbol].rsi_14 | round(2)}}</td>
+                {% else %} 
+                <td> N/A</td>
+              {% endif %}
+              {% if indicator_values[stock.symbol].sma_20 != 0 %}
+                <td>{{ indicator_values[stock.symbol].sma_20 | round(2)}}</td>
+                {% else %} 
+                <td> N/A</td>
+              {% endif %}
+              {% if indicator_values[stock.symbol].sma_50 != 0 %}
+                <td>{{ indicator_values[stock.symbol].sma_50 | round(2)}}</td>
+                {% else %} 
+                <td> N/A</td>
+              {% endif %}
+            {% else %} 
+                <td> N/A</td>
+            {% endif %}  
+          </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+    </div>
+{% endblock %}
